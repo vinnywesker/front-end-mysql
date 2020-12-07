@@ -1,35 +1,32 @@
-import Axios from '../Controller/Axios'
+import Axios from './Axios'
 
-const inserirProduto = async (Nome, Quantidade, CodFornecedor, CodDescricao) => {
-    const post = await Axios.post('/produtos', {
-        key_CodFornecedor: CodFornecedor,
-        key_CodDescricao: CodDescricao,
-        Nome: Nome,
-        Quantidade: Quantidade
+const inserirProduto = async (Nome) => {
+    const post = await Axios.post('/mysql', {
+        nome: Nome
     },
         {
             headers: {
-                operation: 'produto'
+                operation: 'produtos'
             }
         });
     return post;
 }
 
 const inserirFornecedor = async (Nome) => {
-    const post = await Axios.post('/produtos', {
-        Nome: Nome
+    const post = await Axios.post('/mysql', {
+        nome: Nome
     },
         {
             headers: {
-                operation: 'fornecedor'
+                operation: 'fornecedores'
             }
         });
     return post;
 }
 
-const inserirDescricao = async (Nome) => {
-    const post = await Axios.post('/produtos', {
-        Nome: Nome
+const inserirDescricao = async (Descricao) => {
+    const post = await Axios.post('/mysql', {
+        descricao: Descricao
     },
         {
             headers: {
@@ -38,10 +35,39 @@ const inserirDescricao = async (Nome) => {
         });
     return post;
 }
+
+const inserirMovimentacao = async (CodFornecedor, CodDescricao, CodProduto, Quantidade, Valor, Transportadora, ValorFrete) => {
+    const post = await Axios.post('/mysql', {
+        fk_codigo_fornecedor: CodFornecedor,
+        fk_cod_descricao: CodDescricao,
+        fk_codigo_produto: CodProduto,
+        quantidade: Quantidade,
+        valor: Valor,
+        transportadora: Transportadora,
+        valor_frete: ValorFrete
+    },
+        {
+            headers: {
+                operation: 'entrada_saida'
+            }
+        });
+    return post;
+}
+
+const obterDadosTabela = async (Tabela) => {
+    const metodoGet = await Axios.get('/mysql',
+        {
+            headers: {
+                operation: Tabela
+            }
+        });
+    return metodoGet;
+}
+
 const deletarItem = async (Tabela, Codigo) => {
-    const deleting = await Axios.delete('/produtos', {
+    const deleting = await Axios.delete('/mysql', {
         data: {
-            Codigo: Codigo
+            codigo: Codigo
         },
         headers: {
             operation: Tabela
@@ -55,5 +81,7 @@ export {
     inserirProduto,
     inserirFornecedor,
     inserirDescricao,
+    inserirMovimentacao,
+    obterDadosTabela,
     deletarItem
 }
